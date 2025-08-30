@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PANDEMIC LENS - Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('epidemic.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #299a2d;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        /* Popup styles */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .popup h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .popup p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .popup button {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #299a2d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .popup button:hover {
+            background-color: #45a049;
+        }
+
+        /* Overlay styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+        /* Chatbot styles */
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    font-family: Arial, sans-serif;
+    z-index: 9999;
+}
+
+.chatbot-header {
+    background-color: #5ce07e;
+    color: black;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.chatbot-body {
+    display: none;
+    flex-direction: column;
+    height: 350px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.chatbot-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.chatbot-messages .bot,
+.chatbot-messages .user {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+    display: inline-block;
+}
+
+.chatbot-messages .bot {
+    background-color: #e4fbe9;
+    color: #333;
+}
+
+.chatbot-messages .user {
+    background-color: #d1d1f7;
+    color: #333;
+    align-self: flex-end;
+    float: right;
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+}
+
+.chatbot-input button {
+    margin-left: 8px;
+    padding: 8px 12px;
+    border: none;
+    background-color: #299a2d;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Login to PANDEMIC LENS</h2>
+
+    <div class="alert" id="loginAlert">Invalid credentials. Please try again.</div>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter Username" required>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter Password" required>
+    </div>
+
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- Awareness Popup -->
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="awarenessPopup">
+    <h3>Awareness: Prevent Disease Spread</h3>
+    <p>1. Wash your hands frequently with soap and water.</p>
+    <p>2. Maintain social distancing in crowded areas.</p>
+    <p>3. Wear a mask to protect yourself and others.</p>
+    <p>4. Stay informed about disease outbreaks in your area.</p>
+    <button onclick="closePopup()">Got it!</button>
+</div>
+
+<script>
+    function login() {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (username === "" || password === "") {
+            showLoginAlert("Please fill in both fields.");
+            return;
+        }
+
+        // Dummy authentication check (can be replaced with real backend check)
+        if (username === "admin" && password === "pandemic123") {
+            window.location.href = "web.html";  // Change to your prediction page filename
+        } else {
+            showLoginAlert("Invalid credentials. Please try again.");
+        }
+    }
+
+    function showLoginAlert(message) {
+        const alertBox = document.getElementById("loginAlert");
+        alertBox.textContent = message;
+        alertBox.style.display = "block";
+    }
+
+    // Show awareness popup on page load
+    window.onload = function() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("awarenessPopup").style.display = "block";
+    };
+
+    // Close the popup
+    function closePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("awarenessPopup").style.display = "none";
+    }
+    
+// Toggle chatbot visibility
+function toggleChatbot() {
+    const body = document.getElementById("chatbotBody");
+    body.style.display = body.style.display === "flex" ? "none" : "flex";
+}
+
+// Simulate bot reply
+function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const chatBox = document.getElementById("chatMessages");
+
+    // Append user message
+    const userMsg = document.createElement("div");
+    userMsg.className = "user";
+    userMsg.innerText = msg;
+    chatBox.appendChild(userMsg);
+
+    input.value = "";
+
+    // Auto scroll
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Simulated bot responses
+    setTimeout(() => {
+        const botMsg = document.createElement("div");
+        botMsg.className = "bot";
+
+        // Simple simulated knowledge base
+        let reply = "I’m not sure about that. Please ask about a disease or outbreak.";
+
+        if (/covid/i.test(msg)) reply = "COVID-19 is caused by SARS-CoV-2. Stay masked and maintain hygiene!";
+        else if (/flu|influenza/i.test(msg)) reply = "Flu is contagious. Get your annual vaccine for prevention.";
+        else if (/symptoms/i.test(msg)) reply = "Common symptoms include fever, cough, fatigue, and body aches.";
+        else if (/vaccine/i.test(msg)) reply = "Vaccines help reduce severity. Make sure you're up-to-date!";
+        else if (/monkeypox/i.test(msg)) reply = "Monkeypox spreads through contact. Isolate and seek medical care.";
+        else if (/malaria/i.test(msg)) reply = "Malaria is mosquito-borne. Use nets and take preventive medication.";
+
+        botMsg.innerText = reply;
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 600);
+}
+
+</script>
+<!-- Chatbot Button -->
+<div class="chatbot-container" id="chatbotContainer">
+    <div class="chatbot-header" onclick="toggleChatbot()">🩺 Need Help? Chat with us</div>
+    <div class="chatbot-body" id="chatbotBody">
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="bot">Hi there! 👋 I'm HealthBot. Ask me anything about diseases or outbreaks.</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="userInput" placeholder="Ask about COVID, Flu...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

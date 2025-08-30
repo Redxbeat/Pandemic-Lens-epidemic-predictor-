@@ -1,0 +1,179 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANDEMIC LENS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-image: url('epidemic.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.8); 
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out; 
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #299a2d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease; 
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #predictionResult {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .alert {
+            padding: 10px;
+            background-color: #f44336; /* Red background for error */
+            color: white;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            animation: slideIn 0.5s ease-in-out; 
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PREDICTING THE SCALE OF EPIDEMICS</h1>
+    <p>Enter the following details to get the prediction:</p>
+    <div class="form-group">
+        <label for="Country">Country:</label>
+        <input type="text" id="Country" placeholder="Enter Country" required>
+    </div>
+    <div class="form-group">
+        <label for="Disease">Disease:</label>
+        <input type="text" id="Disease" placeholder="Enter Disease" required>
+    </div>
+    <div class="form-group">
+        <label for="Population Density">Population Density:</label>
+        <input type="number" id="Population Density" placeholder="Enter Population Density" required>
+    </div>
+    <div class="form-group">
+        <label for="Vaccination Rate">Vaccination Rate:</label>
+        <input type="number" id="Vaccination Rate" placeholder="Vaccination Rate" required>
+    </div>
+    <div class="form-group">
+        <label for="Temperature">Temperature:</label>
+        <input type="number" id="Average Temperature" placeholder="Enter Average Temperature" required>
+    </div>
+    <div class="form-group">
+        <label for="Humidity">Humidity:</label>
+        <input type="number" id="Humidity" placeholder="Enter Humidity" required>
+    </div>
+    <div class="form-group">
+        <label for="Mortality Rate">Mortality Rate:</label>
+        <input type="number" id="Mortality Rate" placeholder="Enter Mortality Rate" required>
+    </div>
+    <div class="form-group">
+        <label for="Infection Rate">Infection Rate:</label>
+        <input type="number" id="Infection Rate" placeholder="Enter Infection Rate" required>
+    </div>
+    <div class="form-group">
+        <label for="Mobility Index">Mobility Index:</label>
+        <input type="number" id="Mobility Index" placeholder="Enter Mobility Index" required>
+    </div>
+    <button onclick="getPrediction()">Get Prediction</button>
+
+    <div id="predictionResult"></div>
+</div>
+
+<script>
+    async function getPrediction() {
+        // Redirect to the results page immediately
+        window.location.href = 'result.html';
+
+        // Validate all fields are filled
+        const inputs = document.querySelectorAll('input[required]');
+        for (const input of inputs) {
+            if (!input.value.trim()) {
+                showAlert(`Please fill in ${input.placeholder}`);
+                return;
+            }
+        }
+    
+        const inputData = {
+            "Country": document.getElementById("Country").value,
+            "Disease": document.getElementById("Disease").value,
+            "Population_Density": parseFloat(document.getElementById("Population Density").value),
+            "Vaccination_Rate": parseFloat(document.getElementById("Vaccination Rate").value),
+            "Mobility_Index": parseFloat(document.getElementById("Mobility Index").value),
+            "Infection_Rate": parseFloat(document.getElementById("Infection Rate").value),
+            "Mortality_Rate": parseFloat(document.getElementById("Mortality Rate").value),
+            "Temperature": parseFloat(document.getElementById("Average Temperature").value),
+            "Humidity": parseFloat(document.getElementById("Humidity").value)
+        };
+    
+        try {
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inputData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                showAlert(data.error);
+                return;
+            }
+    
+            // Redirect to results page with prediction data
+            const queryParams = new URLSearchParams({
+                prediction: data.prediction,
+                disease: data.disease,
+                range_min: data.range.min,
+                range_max: data.range.max,
+                prediction_id: data.prediction_id
+            }).toString();
+            
+            window.location.href = `result.html?${queryParams}`;
+        } catch (error) {
+            console.error('Error:', error);
+            showAlert("There was an error with the prediction. Please try again.");
+        }
+    }
+</script>
+
+</body>
+</html>
